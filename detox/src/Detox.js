@@ -9,6 +9,7 @@ const EmulatorDriver = require('./devices/drivers/EmulatorDriver');
 const AttachedAndroidDriver = require('./devices/drivers/AttachedAndroidDriver');
 const DetoxRuntimeError = require('./errors/DetoxRuntimeError');
 const argparse = require('./utils/argparse');
+const MissingDetox = require('./utils/MissingDetox');
 const configuration = require('./configuration');
 const Client = require('./client/Client');
 const DetoxServer = require('./server/DetoxServer');
@@ -178,5 +179,7 @@ class Detox {
     return session;
   }
 }
+
+Detox.none = new MissingDetox();
 
 module.exports = Detox;
