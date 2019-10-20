@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const chalk = require('chalk').default;
 const ReporterBase = require('./ReporterBase');
 
@@ -8,8 +9,10 @@ class WorkerAssignReporterImpl extends ReporterBase {
   }
 
   report(workerName) {
-    this._traceln(`${chalk.whiteBright(workerName)} assigned to ${chalk.blueBright(this.device.name)}`);
-    this._traceln('');
+    const deviceName = _.attempt(() => this.device.name);
+    if (!_.isError(deviceName)) {
+      this._traceln(`${chalk.whiteBright(workerName)} assigned to ${chalk.blueBright(this.device.name)}\n`);
+    }
   }
 }
 
