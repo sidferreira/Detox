@@ -34,6 +34,10 @@ public class DetoxMatcher {
         // static class
     }
 
+    public static Matcher<View> matcherForFocus) {
+        return allOf(hasFocus(), withEffectiveVisibility(Visibility.VISIBLE));
+    }
+
     public static Matcher<View> matcherForText(String text) {
         // return anyOf(withText(text), withContentDescription(text));
         return allOf(withText(text), withEffectiveVisibility(Visibility.VISIBLE));

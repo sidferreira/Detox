@@ -7,6 +7,16 @@
 
 
 class GREYMatchers {
+  static matcherForFocus() {
+    return {
+      target: {
+        type: "Class",
+        value: "GREYMatchers"
+      },
+      method: "detoxMatcherForFocus",
+    };
+  }
+
   static detoxMatcherForText(text) {
     if (typeof text !== "string") throw new Error("text should be a string, but got " + (text + (" (" + (typeof text + ")"))));
     return {

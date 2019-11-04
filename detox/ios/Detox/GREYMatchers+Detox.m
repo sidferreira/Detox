@@ -11,6 +11,10 @@
 #import "ReactNativeSupport.h"
 
 @implementation GREYMatchers (Detox)
++ (id<GREYMatcher>)detoxMatcherForFocus
+{
+	return grey_accessibilityFocused();
+}
 
 + (id<GREYMatcher>)detoxMatcherForText:(NSString *)text
 {

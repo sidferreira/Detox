@@ -11,6 +11,7 @@ Test async code with waitFor.
 - [`.toBeNotVisible()`](#tobenotvisible)
 - [`.toExist()`](#toexist)
 - [`.toNotExist()`](#tonotexist)
+- [`.toHaveFocus()`](#tohavefocus)
 - [`.toHaveText()`](#tohavetexttext)
 - [`.toHaveValue()`](#tohavevaluevalue)
 - [`.withTimeout()`](#withtimeoutmillis)
@@ -51,6 +52,10 @@ Wait for the view to not exist in the UI hierarchy.
 ```js
 await waitFor(element(by.id('RandomJunk959'))).toNotExist().withTimeout(2000);
 ```
+
+### `toHaveFocus()`
+
+Test will hang until view have focus or a timeout has occurred.
 
 ### `toHaveText(text)`
 Test will hang until expectation is met or a timeout has occurred.

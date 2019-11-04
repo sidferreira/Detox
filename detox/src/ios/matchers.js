@@ -101,6 +101,13 @@ class NotExistsMatcher extends Matcher {
   }
 }
 
+class FocusMatcher extends Matcher {
+  constructor() {
+    super();
+    this._call = invoke.callDirectly(GreyMatchersDetox.matcherForFocus());
+  }
+}
+
 class TextMatcher extends Matcher {
   constructor(value) {
     super();
@@ -125,6 +132,7 @@ module.exports = {
   NotVisibleMatcher,
   ExistsMatcher,
   NotExistsMatcher,
+  FocusMatcher,
   TextMatcher,
   ValueMatcher
 };

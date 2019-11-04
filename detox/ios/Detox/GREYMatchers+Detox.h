@@ -10,6 +10,8 @@
 
 @interface GREYMatchers (Detox)
 
++ (id<GREYMatcher>)detoxMatcherForFocus;
+
 + (id<GREYMatcher>)detoxMatcherForText:(NSString *)text;
 
 + (id<GREYMatcher>)detox_matcherForAccessibilityLabel:(NSString *)label;

@@ -10,6 +10,7 @@ Expect verifies if a certain value is as expected to be.
 - [`.toBeNotVisible()`](#tobenotvisible)
 - [`.toExist()`](#toexist)
 - [`.toNotExist()`](#tonotexist)
+- [`.toHaveFocus()`](#tohavefocus)
 - [`.toHaveText()`](#tohavetexttext)
 - [`.toHaveLabel()`](#tohavelabellabel)
 - [`.toHaveId()`](#tohaveidid)
@@ -42,6 +43,13 @@ Expect the view to not exist in the UI hierarchy.
 
 ```js
 await expect(element(by.id('RandomJunk959'))).toNotExist();
+```
+
+### `toHaveFocus()`
+Expect the view to have focus.
+
+```js
+await expect(element(by.id('UniqueId204'))).toHaveFocus();
 ```
 
 ### `toHaveText(text)`

@@ -9,6 +9,7 @@ const VisibleMatcher = matchers.VisibleMatcher;
 const NotVisibleMatcher = matchers.NotVisibleMatcher;
 const ExistsMatcher = matchers.ExistsMatcher;
 const NotExistsMatcher = matchers.NotExistsMatcher;
+const FocusMatcher = matchers.FocusMatcher;
 const TextMatcher = matchers.TextMatcher;
 const ValueMatcher = matchers.ValueMatcher;
 const GreyActions = require('./earlgreyapi/GREYActions');
@@ -371,6 +372,9 @@ class ExpectElement extends Expect {
   async toNotExist() {
     return await new MatcherAssertionInteraction(this._invocationManager, this._element, new NotExistsMatcher()).execute();
   }
+  async toHaveFocus() {
+    return await new MatcherAssertionInteraction(this._invocationManager, this._element, new FocusMatcher()).execute();
+  }
   async toHaveText(value) {
     return await new MatcherAssertionInteraction(this._invocationManager, this._element, new TextMatcher(value)).execute();
   }
@@ -408,6 +412,9 @@ class WaitForElement extends WaitFor {
   }
   toNotExist() {
     return new WaitForInteraction(this._invocationManager, this._element, new ExistsMatcher())._not();
+  }
+  toHaveFocus() {
+    return new WaitForInteraction(this._invocationManager, this._element, new FocusMatcher());
   }
   toHaveText(text) {
     return new WaitForInteraction(this._invocationManager, this._element, new TextMatcher(text));
