@@ -65,7 +65,12 @@ class DetoxExportWrapper {
       }
 
       const deviceConfig = configuration.composeDeviceConfig(detoxConfig);
-      const artifactsConfig = configuration.composeArtifactsConfig(detoxConfig, deviceConfig);
+      const configurationName = _.findKey(detoxConfig.configurations, (config) => config === deviceConfig);
+      const artifactsConfig = configuration.composeArtifactsConfig({
+        configurationName,
+        detoxConfig,
+        deviceConfig,
+      });
 
       instance = new Detox({
         deviceConfig,

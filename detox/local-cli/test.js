@@ -3,7 +3,6 @@ const path = require('path');
 const cp = require('child_process');
 const fs = require('fs-extra');
 const environment = require('../src/utils/environment');
-const buildDefaultArtifactsRootDirpath = require('../src/artifacts/utils/buildDefaultArtifactsRootDirpath');
 const DetoxConfigError = require('../src/errors/DetoxConfigError');
 
 const log = require('../src/utils/logger').child({ __filename });
@@ -81,33 +80,28 @@ module.exports.builder = {
   a: {
     alias: 'artifacts-location',
     group: 'Debugging:',
-    describe: 'Artifacts (logs, screenshots, etc) root directory.',
-    default: 'artifacts'
+    describe: 'Artifacts (logs, screenshots, etc) root directory.'
   },
   'record-logs': {
     group: 'Debugging:',
     choices: ['failing', 'all', 'none'],
-    default: 'none',
     describe: 'Save logs during each test to artifacts directory. Pass "failing" to save logs of failing tests only.'
   },
   'take-screenshots': {
     group: 'Debugging:',
     choices: ['manual', 'failing', 'all', 'none'],
-    default: 'manual',
     describe:
       'Save screenshots before and after each test to artifacts directory. Pass "failing" to save screenshots of failing tests only.'
   },
   'record-videos': {
     group: 'Debugging:',
     choices: ['failing', 'all', 'none'],
-    default: 'none',
     describe:
       'Save screen recordings of each test to artifacts directory. Pass "failing" to save recordings of failing tests only.'
   },
   'record-performance': {
     group: 'Debugging:',
     choices: ['all', 'none'],
-    default: 'none',
     describe:
       '[iOS Only] Save Detox Instruments performance recordings of each test to artifacts directory.'
   },
@@ -150,8 +144,6 @@ module.exports.builder = {
 const collectExtraArgs = require('./utils/collectExtraArgs')(module.exports.builder);
 
 module.exports.handler = async function test(program) {
-  program.artifactsLocation = buildDefaultArtifactsRootDirpath(program.configuration, program.artifactsLocation);
-
   const config = getDetoxSection();
 
   if (!program.file && config.file) {

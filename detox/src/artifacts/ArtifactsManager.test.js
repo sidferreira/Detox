@@ -3,13 +3,16 @@ const sleep = require('../utils/sleep');
 const testSummaries = require('./templates/plugin/__mocks__/testSummaries.mock');
 
 describe('ArtifactsManager', () => {
-  let proxy;
+  let proxy, FakePathBuilder;
 
   beforeEach(() => {
     jest.mock('fs-extra');
+    jest.mock('./__mocks__/FakePathBuilder');
     jest.mock('./utils/ArtifactPathBuilder');
     jest.mock('../utils/argparse');
     jest.mock('../utils/logger');
+
+    FakePathBuilder = require('./__mocks__/FakePathBuilder');
 
     proxy = {
       get ArtifactPathBuilder() {
@@ -53,11 +56,9 @@ describe('ArtifactsManager', () => {
 
     describe('with { pathBuilder } string', () => {
       it('should require that module as pathBuilder', () => {
-        const fakePathBuilderPath = path.join(__dirname, '__mocks__/FakePathBuilder');
-        jest.mock(fakePathBuilderPath);
-
-        artifactsManager = new proxy.ArtifactsManager({ pathBuilder: fakePathBuilderPath });
-        expect(artifactsManager._pathBuilder).toBe(require(fakePathBuilderPath));
+        const pathBuilder = new FakePathBuilder();
+        artifactsManager = new proxy.ArtifactsManager({ pathBuilder });
+        expect(artifactsManager._pathBuilder).toBe(pathBuilder);
       });
     })
   });
@@ -113,10 +114,8 @@ describe('ArtifactsManager', () => {
         });
       };
 
-      const fakePathBuilderPath = path.join(__dirname, '__mocks__/FakePathBuilder');
-      jest.mock(fakePathBuilderPath);
-
-      artifactsManager = new proxy.ArtifactsManager({ pathBuilder: fakePathBuilderPath });
+      pathBuilder = new FakePathBuilder();
+      artifactsManager = new proxy.ArtifactsManager({ pathBuilder });
       artifactsManager.registerArtifactPlugins({ testPlugin: testPluginFactory });
     });
 

@@ -45,7 +45,7 @@ describe('test', () => {
       await callCli('./test', 'test');
 
       expect(mockExec).toHaveBeenCalledWith(
-        expect.stringContaining(`${normalize('node_modules/.bin/mocha')} --opts e2e/mocha.opts --configuration only --grep :ios: --invert --artifacts-location "${normalize('artifacts/only.')}`),
+        expect.stringContaining(`${normalize('node_modules/.bin/mocha')} --opts e2e/mocha.opts --configuration only --grep :ios: --invert`),
         expect.anything()
       );
 
@@ -95,10 +95,6 @@ describe('test', () => {
         expect.objectContaining({
           env: expect.objectContaining({
             configuration: 'only',
-            recordLogs: 'none',
-            takeScreenshots: 'manual',
-            recordVideos: 'none',
-            artifactsLocation: expect.stringContaining(normalize('artifacts/only.')),
           }),
         })
       );
@@ -252,7 +248,7 @@ describe('test', () => {
     }
     expect(mockExec).toHaveBeenCalledWith(
       expect.stringContaining(
-        `${normalize('node_modules/.bin/mocha')} --opts e2e/mocha.opts --configuration only --debug-synchronization 3000 --grep :ios: --invert --artifacts-location "${normalize('artifacts/only.')}`
+        `${normalize('node_modules/.bin/mocha')} --opts e2e/mocha.opts --configuration only --debug-synchronization 3000 --grep :ios: --invert`
       ),
       expect.anything()
     );

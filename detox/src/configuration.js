@@ -4,6 +4,7 @@ const DetoxConfigError = require('./errors/DetoxConfigError');
 const uuid = require('./utils/uuid');
 const argparse = require('./utils/argparse');
 const getPort = require('get-port');
+const buildDefaultArtifactsRootDirpath = require('./artifacts/utils/buildDefaultArtifactsRootDirpath');
 
 async function defaultSession() {
   return {
@@ -65,27 +66,71 @@ function composeDeviceConfig({ configurations }) {
   return deviceConfig;
 }
 
-function resolvePathBuilder(pathBuilder) {
-  if (typeof pathBuilder === 'string') {
-    const pathBuilderModulePath = pathBuilder;
-    const pathBuilderAbsolutePath = path.isAbsolute(pathBuilderModulePath)
-      ? pathBuilderModulePath
-      : path.join(process.cwd(), pathBuilderModulePath);
-
-    return require(pathBuilderAbsolutePath);
-  }
-
-  return pathBuilder;
-}
-
 function isPluginEnabled(key) {
 
 }
 
-function composeArtifactsConfig(deviceConfig, detoxConfig) {
-  const artifactsConfig = _.merge({}, detoxConfig.artifacts, deviceConfig.artifacts);
-  artifactsConfig.pathBuilder = resolvePathBuilder(artifactsConfig.pathBuilder);
-  delete deviceConfig.artifacts;
+function getArtifactsCliConfig() {
+  return {
+    artifactsLocation: argparse.getArgValue('artifacts-location'),
+    recordLogs: argparse.getArgValue('record-logs'),
+    takeScreenshots: argparse.getArgValue('take-screenshots'),
+    recordVideos: argparse.getArgValue('record-videos'),
+    recordPerformance: argparse.getArgValue('record-performance'),
+  };
+}
+
+function resolveModuleFromPath(modulePath) {
+  return path.isAbsolute(modulePath)
+    ? require(modulePath)
+    : require(path.join(process.cwd(), modulePath));
+}
+
+function composeArtifactsConfig({
+  configurationName,
+  deviceConfig,
+  detoxConfig,
+  cliConfig = getArtifactsCliConfig()
+}) {
+  const artifactsConfig = {
+    artifactsLocation: 'artifacts',
+    pathBuilder: null,
+    plugins: {
+      log: { lifecycle: 'none' },
+      screenshot: { lifecycle: 'manual' },
+      video: { lifecycle: 'none' },
+      instruments: { lifecycle: 'none' },
+    },
+  };
+
+  _.merge(artifactsConfig, detoxConfig.artifacts);
+  _.merge(artifactsConfig, deviceConfig.artifacts);
+
+  if (cliConfig.artifactsLocation) {
+    artifactsConfig.plugins.log.lifecycle = cliConfig.artifactsLocation;
+  }
+  if (cliConfig.recordLogs) {
+    artifactsConfig.plugins.log.lifecycle = cliConfig.recordLogs;
+  }
+  if (cliConfig.takeScreenshots) {
+    artifactsConfig.plugins.screenshot.lifecycle = cliConfig.recordLogs;
+  }
+  if (cliConfig.recordVideos) {
+    artifactsConfig.plugins.video.lifecycle = cliConfig.recordVideos;
+  }
+  if (cliConfig.recordPerformance) {
+    artifactsConfig.plugins.instruments.lifecycle = cliConfig.recordPerformance;
+  }
+
+  artifactsConfig.artifactsLocation = buildDefaultArtifactsRootDirpath(
+    configurationName,
+    artifactsConfig.artifactsLocation
+  );
+
+  if (typeof artifactsConfig.pathBuilder === 'string') {
+    artifactsConfig.pathBuilder = resolveModuleFromPath(artifactsConfig.pathBuilder);
+  }
+
   return artifactsConfig;
 }
 

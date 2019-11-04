@@ -34,6 +34,16 @@ describe('FileArtifact', () => {
 
         expect(logger.debug).toHaveBeenCalledWith({ event: 'MOVE_FILE' }, expect.any(String));
       });
+
+      it('should copy file to the specified location if { copy: true } is specified', async () => {
+        fileArtifact = new FileArtifact({ temporaryPath });
+        await fileArtifact.save(destinationPath, { copy: true });
+
+        expect(await fs.exists(destinationPath)).toBe(true);
+        expect(await fs.exists(temporaryPath)).toBe(true);
+
+        expect(logger.debug).toHaveBeenCalledWith({ event: 'COPY_FILE' }, expect.any(String));
+      });
     });
 
     describe('if temporary file does not exist', () => {
@@ -119,6 +129,7 @@ describe('FileArtifact', () => {
         await fs.ensureFile(temporaryPath);
         await FileArtifact.moveTemporaryFile(logger, temporaryPath, destinationPath);
 
+        expect(await fs.exists(temporaryPath)).toBe(false);
         expect(await fs.exists(destinationPath)).toBe(true);
         expect(logger.debug).toHaveBeenCalledWith({ event: 'MOVE_FILE' }, expect.any(String));
       });
@@ -128,6 +139,24 @@ describe('FileArtifact', () => {
 
         expect(await fs.exists(destinationPath)).toBe(false);
         expect(logger.warn).toHaveBeenCalledWith({ event: 'MOVE_FILE_MISSING' }, expect.any(String));
+      });
+    });
+
+    describe('.copyTemporaryFile', () => {
+      it('should copy file from source to destination and log that', async () => {
+        await fs.ensureFile(temporaryPath);
+        await FileArtifact.copyTemporaryFile(logger, temporaryPath, destinationPath);
+
+        expect(await fs.exists(temporaryPath)).toBe(true);
+        expect(await fs.exists(destinationPath)).toBe(true);
+        expect(logger.debug).toHaveBeenCalledWith({ event: 'COPY_FILE' }, expect.any(String));
+      });
+
+      it('should log error if source file does not exist', async () => {
+        await FileArtifact.copyTemporaryFile(logger, temporaryPath, destinationPath);
+
+        expect(await fs.exists(destinationPath)).toBe(false);
+        expect(logger.warn).toHaveBeenCalledWith({ event: 'COPY_FILE_MISSING' }, expect.any(String));
       });
     });
   });
