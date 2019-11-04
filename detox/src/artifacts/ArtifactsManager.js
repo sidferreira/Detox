@@ -4,28 +4,27 @@ const path = require('path');
 const util = require('util');
 const FileArtifact = require('./templates/artifact/FileArtifact');
 const log = require('../utils/logger').child({ __filename });
-const argparse = require('../utils/argparse');
 const ArtifactPathBuilder = require('./utils/ArtifactPathBuilder');
 
 class ArtifactsManager {
-  constructor({ pathBuilder, ...pluginConfigs } = {}) {
+  constructor({ artifactsLocation, pathBuilder, plugins } = {}) {
     this.onTerminate = _.once(this.onTerminate.bind(this));
 
-    this._pluginConfigs = pluginConfigs;
+    this._pluginConfigs = plugins;
     this._idlePromise = Promise.resolve();
     this._idleCallbackRequests = [];
     this._activeArtifacts = [];
     this._artifactPlugins = {};
     this._pathBuilder = pathBuilder || new ArtifactPathBuilder({
-      artifactsRootDir: argparse.getArgValue('artifacts-location') || 'artifacts',
+      artifactsRootDir: artifactsLocation,
     });
   }
 
-  _instantitateArtifactPlugin(pluginFactory, pluginConfig) {
+  _instantitateArtifactPlugin(pluginFactory, pluginUserConfig) {
     const artifactsApi = {
       plugin: null,
 
-      config: { ...pluginConfig },
+      userConfig: { ...pluginUserConfig },
 
       preparePathForArtifact: async (artifactName, testSummary) => {
         const artifactPath = this._pathBuilder.buildPathForTestArtifact(artifactName, testSummary);

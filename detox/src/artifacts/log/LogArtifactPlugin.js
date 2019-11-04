@@ -1,5 +1,4 @@
 const logger = require('../../utils/logger');
-const argparse = require('../../utils/argparse');
 const FileArtifact = require('../templates/artifact/FileArtifact');
 const StartupAndTestRecorderPlugin = require('../templates/plugin/StartupAndTestRecorderPlugin');
 const getTimeStampString = require('../utils/getTimeStampString');
@@ -11,23 +10,25 @@ class LogArtifactPlugin extends StartupAndTestRecorderPlugin {
   constructor(config) {
     super(config);
 
-    const recordLogs = argparse.getArgValue('record-logs');
-
-    this.enabled = recordLogs && recordLogs !== 'none';
-    this.keepOnlyFailedTestsArtifacts = recordLogs === 'failing';
+    this.enabled = this.api.userConfig.lifecycle !== 'none';
+    this.keepOnlyFailedTestsArtifacts = this.api.userConfig.lifecycle === 'failing';
   }
 
   async onAfterAll() {
     await super.onAfterAll();
 
     if (this.shouldKeepArtifactOfSession()) {
-      const jsonLog = new FileArtifact({ temporaryPath: logger.jsonFileStreamPath });
-      const plainLog = new FileArtifact({ temporaryPath: logger.plainFileStreamPath });
+      this.api.requestIdleCallback(async () => {
+        const [jsonLogPath, plainLogPath] = await Promise.all([
+          this.api.preparePathForArtifact(`detox_pid_${process.pid}.json.log`),
+          this.api.preparePathForArtifact(`detox_pid_${process.pid}.log`),
+        ]);
 
-      this.api.requestIdleCallback(() => Promise.all([
-        jsonLog.save(`detox_pid_${process.pid}.json.log`, { copy: true }),
-        plainLog.save(`detox_pid_${process.pid}.log`, { copy: true }),
-      ]));
+        await Promise.all([
+          new FileArtifact({ temporaryPath: logger.jsonFileStreamPath }).save(jsonLogPath),
+          new FileArtifact({ temporaryPath: logger.plainFileStreamPath }).save(plainLogPath)
+        ]);
+      });
     }
   }
 

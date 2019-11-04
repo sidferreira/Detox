@@ -1,7 +1,4 @@
-const fs = require('fs-extra');
 const temporaryPath = require('../utils/temporaryPath');
-const argparse = require('../../utils/argparse');
-const log = require('../../utils/logger').child({ __filename });
 const WholeTestRecorderPlugin = require('../templates/plugin/WholeTestRecorderPlugin');
 const SimulatorInstrumentsRecording = require('./SimulatorInstrumentsRecording');
 
@@ -10,7 +7,7 @@ class SimulatorInstrumentsPlugin extends WholeTestRecorderPlugin {
     super(config);
 
     this.client = config.client;
-    this.enabled = argparse.getArgValue('record-performance') === 'all';
+    this.enabled = this.api.userConfig.lifecycle === 'all';
   }
 
   async onBeforeUninstallApp(event) {
