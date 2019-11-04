@@ -287,6 +287,9 @@ class ExpectElement extends Expect {
   async toHaveFocus() {
     return await new MatcherAssertionInteraction(this._invocationManager, this._element, new FocusMatcher()).execute();
   }
+  async toNotHaveFocus() {
+    return await new MatcherAssertionInteraction(this._invocationManager, this._element, new FocusMatcher().not()).execute();
+  }
   async toHaveText(value) {
     return await new MatcherAssertionInteraction(this._invocationManager, this._element, new TextMatcher(value)).execute();
   }
@@ -327,6 +330,9 @@ class WaitForElement extends WaitFor {
   }
   toHaveFocus() {
     return new WaitForInteraction(this._invocationManager, this._element, new FocusMatcher());
+  }
+  toNotHaveFocus() {
+    return new WaitForInteraction(this._invocationManager, this._element, new FocusMatcher().not());
   }
   toHaveText(text) {
     return new WaitForInteraction(this._invocationManager, this._element, new TextMatcher(text));

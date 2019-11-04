@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Text,
+  TextInput,
   View,
   Switch
 } from 'react-native';
@@ -21,6 +22,8 @@ export default class AssertionsScreen extends Component {
         <Text testID='UniqueId204' style={{marginBottom: 20}} accessibilityLabel={'I contain some text'}>I contain some text</Text>
 
         <Text testID='UniqueId205' style={{marginBottom: 20, position: 'absolute', left: -200}}>I am not visible</Text>
+
+        <TextInput testID="UniqueId206" style={{ marginBottom: 20, height: 30, borderWidth: 2, borderColor: 'red', width: 260 }} />
 
         <Switch testID='UniqueId146'
           onValueChange={(value) => this.setState({switchValue: value})}

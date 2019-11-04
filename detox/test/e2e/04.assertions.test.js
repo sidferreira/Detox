@@ -21,6 +21,15 @@ describe('Assertions', () => {
     await expect(element(by.id('RandomJunk959'))).toNotExist();
   });
 
+  it('should assert an element has focus', async () => {
+    await expect(element(by.id('UniqueId206'))).toNotHaveFocus();
+    // await element(by.id('UniqueId206')).typeText('Now with focus');
+    await element(by.id('UniqueId206')).tap();
+    await expect(element(by.id('UniqueId206'))).toHaveFocus();
+    await element(by.id('UniqueId204')).tap();
+    await expect(element(by.id('UniqueId206'))).toNotHaveFocus();
+  });
+
   // matches specific text elements like UIButton, UILabel, UITextField or UITextView, RCTText
   it('should assert an element has text', async () => {
     await expect(element(by.id('UniqueId204'))).toHaveText('I contain some text');
